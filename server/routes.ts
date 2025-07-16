@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { insertMessageSchema, insertConversationSchema, insertAppointmentSchema } from "@shared/schema";
 import { processAppointmentRequest, generateChatResponse } from "./services/openai-service";
 import { calendarService } from "./services/calendar-service";
+import { sendAppointmentConfirmation } from "./services/email-service";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Get all conversations for current user (mock user ID = 1)
@@ -91,6 +92,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
           appointmentCreated = true;
           appointmentDetails = appointment;
+
+          // Send confirmation email
+          const appointmentDate = new Date(extractedDetails.start_time);
+          const emailSent = await sendAppointmentConfirmation({
+            userEmail: process.env.USER_EMAIL || 'user@example.com',
+            appointmentSummary: extractedDetails.summary,
+            appointmentDate: appointmentDate.toLocaleDateString('en-US', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            }),
+            appointmentTime: appointmentDate.toLocaleTimeString('en-US', {
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true
+            }),
+            calendarEventId: eventId
+          });
+
+          if (emailSent) {
+            console.log('Appointment confirmation email sent successfully');
+          }
         }
       } catch (appointmentError) {
         console.error("Error processing appointment:", appointmentError);

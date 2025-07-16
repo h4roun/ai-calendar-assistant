@@ -15,12 +15,15 @@ export interface AppointmentDetails {
 }
 
 export async function processAppointmentRequest(userInput: string): Promise<AppointmentDetails> {
+  const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
   const systemPrompt = `You are an assistant that extracts medical appointment details. 
 The user will describe a situation, and you must return a JSON object 
 with the fields: summary, start_time, and end_time in ISO 8601 format.
 Make sure the times are reasonable and in the future.
-If the user doesn't specify a time, suggest a reasonable time during business hours.
-If the user doesn't specify a date, use the next available weekday.`;
+If the user doesn't specify a time, suggest a reasonable time during business hours (9 AM - 5 PM).
+If the user doesn't specify a date, use the next available weekday.
+Today's date is ${currentDate}. Always schedule appointments in the future from this date.
+Use the timezone Europe/Paris for all appointments.`;
 
   try {
     const response = await client.chat.completions.create({

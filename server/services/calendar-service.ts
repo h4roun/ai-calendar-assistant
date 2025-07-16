@@ -30,11 +30,11 @@ export class CalendarService {
         summary: eventData.summary,
         start: {
           dateTime: eventData.start_time,
-          timeZone: 'America/New_York', // Default timezone, should be configurable
+          timeZone: 'Europe/Paris',
         },
         end: {
           dateTime: eventData.end_time,
-          timeZone: 'America/New_York',
+          timeZone: 'Europe/Paris',
         },
       };
 
