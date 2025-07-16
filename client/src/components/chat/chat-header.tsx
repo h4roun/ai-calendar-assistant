@@ -31,7 +31,7 @@ export default function ChatHeader({ onLogout }: ChatHeaderProps) {
         </Button>
         <Button
           onClick={onLogout}
-          className="bg-blue-600 hover:bg-blue-700 text-white"
+          className="hover:bg-blue-700 text-white bg-[#4a060b]"
           size="sm"
         >
           <LogOut size={16} className="mr-2" />
