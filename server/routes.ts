@@ -172,6 +172,38 @@ Is there anything else I can help you with?`;
     }
   });
 
+  // Google OAuth routes
+  app.get("/auth/google", async (req, res) => {
+    try {
+      const authUrl = await calendarService.authenticateUser();
+      res.redirect(authUrl);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to initiate Google authentication" });
+    }
+  });
+
+  app.get("/auth/google/callback", async (req, res) => {
+    try {
+      const { code } = req.query;
+      if (typeof code === 'string') {
+        await calendarService.handleAuthCallback(code);
+        res.send(`
+          <html>
+            <body>
+              <h2>Authentication Successful!</h2>
+              <p>You can now close this window and return to the chat.</p>
+              <script>window.close();</script>
+            </body>
+          </html>
+        `);
+      } else {
+        res.status(400).json({ message: "Invalid authorization code" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Failed to complete Google authentication" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

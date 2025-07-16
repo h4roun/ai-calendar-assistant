@@ -11,6 +11,7 @@ interface CalendarEvent {
 
 export class CalendarService {
   private oauth2Client: OAuth2Client;
+  private tokens: any = null;
 
   constructor() {
     this.oauth2Client = new google.auth.OAuth2(
@@ -22,8 +23,8 @@ export class CalendarService {
 
   async createEvent(eventData: CalendarEvent): Promise<string> {
     try {
-      // For now, we'll simulate calendar event creation
-      // In a real implementation, you would need to handle OAuth2 flow
+      // Set up OAuth2 client with refresh token approach
+      // For simplicity, we'll use a service account approach or stored credentials
       const calendar = google.calendar({ version: 'v3', auth: this.oauth2Client });
 
       const event = {
@@ -38,13 +39,32 @@ export class CalendarService {
         },
       };
 
-      // This would require proper OAuth2 setup in production
-      // For now, we'll return a mock event ID
+      console.log('Creating calendar event:', event);
+
+      // Check if we have valid tokens
+      if (this.tokens) {
+        this.oauth2Client.setCredentials(this.tokens);
+        
+        try {
+          // Attempt to create real calendar event
+          const response = await calendar.events.insert({
+            calendarId: 'primary',
+            requestBody: event,
+          });
+
+          console.log('Calendar event created successfully:', response.data.htmlLink);
+          return response.data.id || `event_${Date.now()}`;
+        } catch (authError) {
+          console.log('Calendar creation failed:', authError.message);
+          this.tokens = null; // Clear invalid tokens
+        }
+      }
+      
+      // Fallback to mock when not authenticated
       const mockEventId = `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      
-      console.log('Calendar event would be created:', event);
+      console.log('Calendar not authenticated - mock event created:', event);
       console.log('Mock event ID:', mockEventId);
-      
+      console.log('To create real events, click "Connect Calendar" in the chat header');
       return mockEventId;
     } catch (error) {
       console.error('Error creating calendar event:', error);
@@ -65,11 +85,11 @@ export class CalendarService {
   async handleAuthCallback(code: string): Promise<void> {
     try {
       const { tokens } = await this.oauth2Client.getToken(code);
+      this.tokens = tokens;
       this.oauth2Client.setCredentials(tokens);
       
-      // In a real implementation, you would store these tokens securely
-      // associated with the user's account
-      console.log('OAuth2 tokens received:', tokens);
+      console.log('Google Calendar authentication successful!');
+      console.log('Calendar events will now be created in your Google Calendar');
     } catch (error) {
       console.error('Error handling auth callback:', error);
       throw new Error('Failed to authenticate with Google Calendar');

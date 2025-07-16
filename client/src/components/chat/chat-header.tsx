@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Bot, Settings, LogOut } from "lucide-react";
+import { Bot, Settings, LogOut, Calendar } from "lucide-react";
 
 interface ChatHeaderProps {
   onLogout: () => void;
@@ -21,6 +21,15 @@ export default function ChatHeader({ onLogout }: ChatHeaderProps) {
         </div>
       </div>
       <div className="flex items-center space-x-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-blue-200 hover:text-white hover:bg-blue-600"
+          onClick={() => window.open('/auth/google', '_blank')}
+        >
+          <Calendar size={18} className="mr-2" />
+          Connect Calendar
+        </Button>
         <Button
           variant="ghost"
           size="sm"
