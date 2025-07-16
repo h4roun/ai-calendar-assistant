@@ -1,0 +1,153 @@
+import type { Express } from "express";
+import { createServer, type Server } from "http";
+import { storage } from "./storage";
+import { insertMessageSchema, insertConversationSchema, insertAppointmentSchema } from "@shared/schema";
+import { processAppointmentRequest, generateChatResponse } from "./services/openai-service";
+import { calendarService } from "./services/calendar-service";
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // Get all conversations for current user (mock user ID = 1)
+  app.get("/api/conversations", async (req, res) => {
+    try {
+      const conversations = await storage.getUserConversations(1);
+      res.json(conversations);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch conversations" });
+    }
+  });
+
+  // Create a new conversation
+  app.post("/api/conversations", async (req, res) => {
+    try {
+      const validatedData = insertConversationSchema.parse({
+        ...req.body,
+        userId: 1 // Mock user ID
+      });
+      
+      const conversation = await storage.createConversation(validatedData);
+      res.json(conversation);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid conversation data" });
+    }
+  });
+
+  // Get messages for a conversation
+  app.get("/api/conversations/:id/messages", async (req, res) => {
+    try {
+      const conversationId = parseInt(req.params.id);
+      const messages = await storage.getConversationMessages(conversationId);
+      res.json(messages);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch messages" });
+    }
+  });
+
+  // Send a message and get AI response
+  app.post("/api/conversations/:id/messages", async (req, res) => {
+    try {
+      const conversationId = parseInt(req.params.id);
+      const { content } = req.body;
+
+      if (!content || typeof content !== 'string') {
+        return res.status(400).json({ message: "Message content is required" });
+      }
+
+      // Save user message
+      const userMessage = await storage.createMessage({
+        conversationId,
+        content,
+        role: 'user',
+        metadata: null
+      });
+
+      // Process the message for appointment scheduling
+      let appointmentCreated = false;
+      let appointmentDetails = null;
+
+      try {
+        // Check if the message contains appointment scheduling intent
+        const appointmentKeywords = ['appointment', 'schedule', 'book', 'doctor', 'dentist', 'medical'];
+        const containsAppointmentIntent = appointmentKeywords.some(keyword => 
+          content.toLowerCase().includes(keyword)
+        );
+
+        if (containsAppointmentIntent) {
+          // Extract appointment details using OpenAI
+          const extractedDetails = await processAppointmentRequest(content);
+          
+          // Create calendar event
+          const eventId = await calendarService.createEvent(extractedDetails);
+          
+          // Save appointment to database
+          const appointment = await storage.createAppointment({
+            userId: 1, // Mock user ID
+            messageId: userMessage.id,
+            summary: extractedDetails.summary,
+            startTime: new Date(extractedDetails.start_time),
+            endTime: new Date(extractedDetails.end_time),
+            calendarEventId: eventId,
+            status: 'scheduled'
+          });
+
+          appointmentCreated = true;
+          appointmentDetails = appointment;
+        }
+      } catch (appointmentError) {
+        console.error("Error processing appointment:", appointmentError);
+        // Continue with regular chat response even if appointment processing fails
+      }
+
+      // Generate AI response
+      const conversationMessages = await storage.getConversationMessages(conversationId);
+      const context = conversationMessages.slice(-5).map(msg => msg.content); // Last 5 messages for context
+      
+      let aiResponseContent;
+      if (appointmentCreated && appointmentDetails) {
+        aiResponseContent = `Perfect! I've successfully scheduled your appointment. Here are the details:
+
+**${appointmentDetails.summary}**
+📅 **Date & Time:** ${appointmentDetails.startTime.toLocaleString()}
+📍 **Location:** To be confirmed
+✅ **Status:** Scheduled
+
+Your appointment has been added to your Google Calendar. You should receive a confirmation email shortly.
+
+Is there anything else I can help you with?`;
+      } else {
+        aiResponseContent = await generateChatResponse(content, context);
+      }
+
+      // Save AI response
+      const aiMessage = await storage.createMessage({
+        conversationId,
+        content: aiResponseContent,
+        role: 'assistant',
+        metadata: appointmentCreated ? { appointmentId: appointmentDetails?.id } : null
+      });
+
+      res.json({
+        userMessage,
+        aiMessage,
+        appointmentCreated,
+        appointmentDetails
+      });
+
+    } catch (error) {
+      console.error("Error processing message:", error);
+      res.status(500).json({ message: "Failed to process message" });
+    }
+  });
+
+  // Get user appointments
+  app.get("/api/appointments", async (req, res) => {
+    try {
+      const appointments = await storage.getUserAppointments(1); // Mock user ID
+      res.json(appointments);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch appointments" });
+    }
+  });
+
+  const httpServer = createServer(app);
+  return httpServer;
+}
