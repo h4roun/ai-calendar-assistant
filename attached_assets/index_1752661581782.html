@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="globals.css" />
+    <link rel="stylesheet" href="style.css" />
+    <title>ChatBot Interface</title>
+  </head>
+  <body>
+    <main class="chat">
+      <div class="chat-container">
+        <div class="chat-window">
+          <header class="chat-header">
+            <img class="chat-avatar" src="img/group-1.svg" alt="ChatBot Avatar" />
+            <div class="chat-info">
+              <h1 class="chat-title">ChatBot</h1>
+              <p class="chat-status">
+                <span class="status-indicator"></span>
+                online
+              </p>
+            </div>
+            <button class="logout-button">Log-out</button>
+          </header>
+          <div class="chat-messages">
+            <div class="message bot-message">
+              <img class="message-avatar" src="img/group-2-2.png" alt="Bot Avatar" />
+              <p class="message-text">Hi, how can i help you?</p>
+            </div>
+            <div class="message user-message">
+              <p class="message-text">How are you?</p>
+            </div>
+            <div class="message bot-message">
+              <img class="message-avatar" src="img/group-2.png" alt="Bot Avatar" />
+              <p class="message-text">Fine thanks!</p>
+            </div>
+            <div class="message user-message">
+              <p class="message-text">Where are you?</p>
+            </div>
+            <div class="message bot-message">
+              <img class="message-avatar" src="img/group-2.png" alt="Bot Avatar" />
+              <p class="message-text">Im in Adactim!</p>
+            </div>
+          </div>
+          <form class="chat-input-form">
+            <input type="text" class="chat-input" placeholder="Ask your question..." aria-label="Type your message" />
+            <button type="submit" class="send-button" aria-label="Send message">
+              <img src="img/vector.svg" alt="Send" />
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+    <script src="script.js"></script>
+  </body>
+</html>
