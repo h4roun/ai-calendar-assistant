@@ -63,7 +63,7 @@ Preferred communication style: Simple, everyday language.
 2. **Message Creation**: Frontend creates user message and sends to backend
 3. **AI Processing**: Backend processes request through OpenAI service
 4. **Appointment Extraction**: AI extracts structured appointment data
-5. **Calendar Integration**: System creates calendar event (simulated)
+5. **Calendar Integration**: System creates real Google Calendar events using stored OAuth tokens
 6. **Database Storage**: Appointment and messages stored in PostgreSQL
 7. **Response Generation**: AI generates confirmation response
 8. **UI Update**: Frontend displays new messages and appointment card
@@ -110,5 +110,12 @@ Preferred communication style: Simple, everyday language.
 - **AZURE_OPENAI_API_KEY**: API key for OpenAI service
 - **AZURE_OPENAI_ENDPOINT**: Azure OpenAI endpoint URL
 - **GOOGLE_CLIENT_ID/SECRET**: OAuth credentials for Calendar API
+
+## Recent Updates (July 2025)
+- **Calendar Integration**: Successfully implemented real Google Calendar event creation using user's existing OAuth tokens
+- **Date Context**: Fixed AI to use correct current date (July 2025) instead of outdated June 2024
+- **Authentication**: Uses user's actual client_secret.json and token.json files for seamless calendar access
+- **Timezone**: All appointments scheduled in Europe/Paris timezone as requested
+- **Stability**: Removed complex OAuth flows in favor of direct token usage like original Python script
 
 The application follows a modern full-stack architecture with clear separation between frontend and backend concerns, type safety throughout the stack, and integration with external AI and calendar services for a complete appointment scheduling solution.
