@@ -7,7 +7,7 @@ interface ChatHeaderProps {
 
 export default function ChatHeader({ onLogout }: ChatHeaderProps) {
   return (
-    <header className="bg-primary text-white p-6 flex items-center justify-between">
+    <header className="text-white p-6 flex items-center justify-between bg-[#f3202e]">
       <div className="flex items-center space-x-4">
         <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
           <Bot className="text-primary text-xl" size={24} />
