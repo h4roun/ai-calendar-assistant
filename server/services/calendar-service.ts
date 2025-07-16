@@ -25,22 +25,20 @@ export class CalendarService {
   }
 
   private setupCredentials() {
-    // This mimics how your Python script handles authentication
-    // We'll need to get a refresh token through a one-time setup
-    console.log('Calendar service initialized with Google OAuth2 credentials');
+    // Use the tokens from your token.json file
+    const tokens = {
+      access_token: "ya29.a0AS3H6NzFhkfXhXWrMdgfnE1ECoQXYYSSxCR22zwmCrZPgKjPU3CY-n4fko79Eu324EP3Qc_wj_8h8ndhuoHToNJlCqeMIMmkWyV_RiUqwIGEH0_hK_j3wneZHu-jpx7OTmjpJ-4neFnU-gd4Ct3lnM4viUDy59lYquhO3jWzaCgYKAfcSARYSFQHGX2Mi_lpN0nqX4kRhVChmg9ZwoA0175",
+      refresh_token: "1//034Y4rsgi4zhuCgYIARAAGAMSNwF-L9Irl91sLivSKmxLOPxXk6lmUOxh3dAKzbRHaoG2gqZt9eVW6CmUCvecwMxR7DbYQIli3Xs",
+      scope: "https://www.googleapis.com/auth/calendar",
+      token_type: "Bearer"
+    };
+    
+    this.oauth2Client.setCredentials(tokens);
+    console.log('Calendar service initialized with stored OAuth2 tokens');
   }
 
   async createEvent(eventData: CalendarEvent): Promise<string> {
     try {
-      // Check if we have a refresh token stored
-      const refreshToken = process.env.GOOGLE_REFRESH_TOKEN;
-      
-      if (refreshToken) {
-        this.oauth2Client.setCredentials({
-          refresh_token: refreshToken
-        });
-      }
-
       const calendar = google.calendar({ version: 'v3', auth: this.oauth2Client });
 
       const event = {
@@ -55,35 +53,38 @@ export class CalendarService {
         },
       };
 
-      if (refreshToken) {
+      try {
+        // Create real calendar event using stored credentials
+        const response = await calendar.events.insert({
+          calendarId: 'primary',
+          requestBody: event,
+        });
+
+        console.log('✅ Real Google Calendar event created successfully!');
+        console.log('📅 Event link:', response.data.htmlLink);
+        console.log('📅 Event ID:', response.data.id);
+        return response.data.id || `event_${Date.now()}`;
+      } catch (authError) {
+        console.log('❌ Calendar API call failed:', authError.message);
+        
+        // Try to refresh token and retry once
         try {
-          // Attempt to create real calendar event
-          const response = await calendar.events.insert({
+          await this.oauth2Client.getAccessToken();
+          const retryResponse = await calendar.events.insert({
             calendarId: 'primary',
             requestBody: event,
           });
-
-          console.log('✅ Real calendar event created successfully!');
-          console.log('📅 Event link:', response.data.htmlLink);
-          return response.data.id || `event_${Date.now()}`;
-        } catch (authError) {
-          console.log('❌ Calendar API call failed:', authError.message);
-          console.log('💡 Refresh token may be invalid or expired');
+          
+          console.log('✅ Calendar event created after token refresh!');
+          console.log('📅 Event link:', retryResponse.data.htmlLink);
+          return retryResponse.data.id || `event_${Date.now()}`;
+        } catch (retryError) {
+          console.log('❌ Retry failed:', retryError.message);
+          const mockEventId = `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          console.log('📝 Fallback to mock event ID:', mockEventId);
+          return mockEventId;
         }
-      } else {
-        console.log('❌ No Google refresh token found');
-        console.log('💡 To get real calendar events, visit this URL and authorize:');
-        const authUrl = this.oauth2Client.generateAuthUrl({
-          access_type: 'offline',
-          scope: SCOPES,
-        });
-        console.log('🔗 Authorization URL:', authUrl);
       }
-      
-      // Fallback to mock event
-      const mockEventId = `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      console.log('📝 Mock event created (no calendar integration)');
-      return mockEventId;
     } catch (error) {
       console.error('Error in calendar service:', error);
       throw new Error('Failed to create calendar event');
