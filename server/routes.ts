@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { insertMessageSchema, insertConversationSchema, insertAppointmentSchema } from "@shared/schema";
 import { processAppointmentRequest, generateChatResponse } from "./services/openai-service";
 import { calendarService } from "./services/calendar-service";
-import { sendAppointmentConfirmation } from "./services/email-service";
+// import { sendAppointmentConfirmation } from "./services/email-service"; // Temporarily disabled
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Get all conversations for current user (mock user ID = 1)
@@ -93,28 +93,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           appointmentCreated = true;
           appointmentDetails = appointment;
 
-          // Send confirmation email
-          const appointmentDate = new Date(extractedDetails.start_time);
-          const emailSent = await sendAppointmentConfirmation({
-            userEmail: process.env.USER_EMAIL || 'user@example.com',
-            appointmentSummary: extractedDetails.summary,
-            appointmentDate: appointmentDate.toLocaleDateString('en-US', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            }),
-            appointmentTime: appointmentDate.toLocaleTimeString('en-US', {
-              hour: 'numeric',
-              minute: '2-digit',
-              hour12: true
-            }),
-            calendarEventId: eventId
-          });
-
-          if (emailSent) {
-            console.log('Appointment confirmation email sent successfully');
-          }
+          // Email functionality temporarily disabled for stability
+          console.log('Appointment created successfully - calendar event ID:', eventId);
         }
       } catch (appointmentError) {
         console.error("Error processing appointment:", appointmentError);
@@ -172,37 +152,7 @@ Is there anything else I can help you with?`;
     }
   });
 
-  // Google OAuth routes
-  app.get("/auth/google", async (req, res) => {
-    try {
-      const authUrl = await calendarService.authenticateUser();
-      res.redirect(authUrl);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to initiate Google authentication" });
-    }
-  });
-
-  app.get("/auth/google/callback", async (req, res) => {
-    try {
-      const { code } = req.query;
-      if (typeof code === 'string') {
-        await calendarService.handleAuthCallback(code);
-        res.send(`
-          <html>
-            <body>
-              <h2>Authentication Successful!</h2>
-              <p>You can now close this window and return to the chat.</p>
-              <script>window.close();</script>
-            </body>
-          </html>
-        `);
-      } else {
-        res.status(400).json({ message: "Invalid authorization code" });
-      }
-    } catch (error) {
-      res.status(500).json({ message: "Failed to complete Google authentication" });
-    }
-  });
+  // OAuth routes temporarily removed for stability
 
   const httpServer = createServer(app);
   return httpServer;

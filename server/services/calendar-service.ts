@@ -11,20 +11,36 @@ interface CalendarEvent {
 
 export class CalendarService {
   private oauth2Client: OAuth2Client;
-  private tokens: any = null;
 
   constructor() {
+    // Use the credentials from your client_secret.json file
     this.oauth2Client = new google.auth.OAuth2(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET,
-      process.env.GOOGLE_REDIRECT_URI || 'http://localhost:5000/auth/google/callback'
+      '353544345589-5g3udf04rbjsu0mfti7rouu1cdm28i8h.apps.googleusercontent.com',
+      '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',
+      'http://localhost'
     );
+    
+    // Set up credentials similar to your Python script
+    this.setupCredentials();
+  }
+
+  private setupCredentials() {
+    // This mimics how your Python script handles authentication
+    // We'll need to get a refresh token through a one-time setup
+    console.log('Calendar service initialized with Google OAuth2 credentials');
   }
 
   async createEvent(eventData: CalendarEvent): Promise<string> {
     try {
-      // Set up OAuth2 client with refresh token approach
-      // For simplicity, we'll use a service account approach or stored credentials
+      // Check if we have a refresh token stored
+      const refreshToken = process.env.GOOGLE_REFRESH_TOKEN;
+      
+      if (refreshToken) {
+        this.oauth2Client.setCredentials({
+          refresh_token: refreshToken
+        });
+      }
+
       const calendar = google.calendar({ version: 'v3', auth: this.oauth2Client });
 
       const event = {
@@ -39,12 +55,7 @@ export class CalendarService {
         },
       };
 
-      console.log('Creating calendar event:', event);
-
-      // Check if we have valid tokens
-      if (this.tokens) {
-        this.oauth2Client.setCredentials(this.tokens);
-        
+      if (refreshToken) {
         try {
           // Attempt to create real calendar event
           const response = await calendar.events.insert({
@@ -52,22 +63,29 @@ export class CalendarService {
             requestBody: event,
           });
 
-          console.log('Calendar event created successfully:', response.data.htmlLink);
+          console.log('✅ Real calendar event created successfully!');
+          console.log('📅 Event link:', response.data.htmlLink);
           return response.data.id || `event_${Date.now()}`;
         } catch (authError) {
-          console.log('Calendar creation failed:', authError.message);
-          this.tokens = null; // Clear invalid tokens
+          console.log('❌ Calendar API call failed:', authError.message);
+          console.log('💡 Refresh token may be invalid or expired');
         }
+      } else {
+        console.log('❌ No Google refresh token found');
+        console.log('💡 To get real calendar events, visit this URL and authorize:');
+        const authUrl = this.oauth2Client.generateAuthUrl({
+          access_type: 'offline',
+          scope: SCOPES,
+        });
+        console.log('🔗 Authorization URL:', authUrl);
       }
       
-      // Fallback to mock when not authenticated
+      // Fallback to mock event
       const mockEventId = `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      console.log('Calendar not authenticated - mock event created:', event);
-      console.log('Mock event ID:', mockEventId);
-      console.log('To create real events, click "Connect Calendar" in the chat header');
+      console.log('📝 Mock event created (no calendar integration)');
       return mockEventId;
     } catch (error) {
-      console.error('Error creating calendar event:', error);
+      console.error('Error in calendar service:', error);
       throw new Error('Failed to create calendar event');
     }
   }
