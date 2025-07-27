@@ -62,39 +62,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Process the message for appointment scheduling
-      let appointmentCreated = false;
-      let appointmentDetails = null;
+      let appointmentsCreated = false;
+      let createdAppointments = [];
+      let aiResponseFromAppointment = null;
 
       try {
         // Check if the message contains appointment scheduling intent
-        const appointmentKeywords = ['appointment', 'schedule', 'book', 'doctor', 'dentist', 'medical'];
+        const appointmentKeywords = [
+          'appointment', 'schedule', 'book', 'doctor', 'dentist', 'medical', 
+          'rendez-vous', 'réserver', 'docteur', 'dentiste', 'médical',
+          'cita', 'programar', 'médico', 'dentista'
+        ];
         const containsAppointmentIntent = appointmentKeywords.some(keyword => 
-          content.toLowerCase().includes(keyword)
+          content.toLowerCase().includes(keyword.toLowerCase())
         );
 
         if (containsAppointmentIntent) {
-          // Extract appointment details using OpenAI
-          const extractedDetails = await processAppointmentRequest(content);
+          // Extract appointment details using OpenAI (now supports multiple appointments)
+          const extractedData = await processAppointmentRequest(content);
           
-          // Create calendar event
-          const eventId = await calendarService.createEvent(extractedDetails);
-          
-          // Save appointment to database
-          const appointment = await storage.createAppointment({
-            userId: 1, // Mock user ID
-            messageId: userMessage.id,
-            summary: extractedDetails.summary,
-            startTime: new Date(extractedDetails.start_time),
-            endTime: new Date(extractedDetails.end_time),
-            calendarEventId: eventId,
-            status: 'scheduled'
-          });
+          // Process each appointment
+          for (const appointmentDetail of extractedData.appointments) {
+            try {
+              // Create calendar event
+              const eventId = await calendarService.createEvent(appointmentDetail);
+              
+              // Save appointment to database
+              const appointment = await storage.createAppointment({
+                userId: 1, // Mock user ID
+                messageId: userMessage.id,
+                summary: appointmentDetail.summary,
+                startTime: new Date(appointmentDetail.start_time),
+                endTime: new Date(appointmentDetail.end_time),
+                calendarEventId: eventId,
+                status: 'scheduled'
+              });
 
-          appointmentCreated = true;
-          appointmentDetails = appointment;
+              createdAppointments.push(appointment);
+              console.log('Appointment created successfully - calendar event ID:', eventId);
+            } catch (singleAppointmentError) {
+              console.error('Error creating single appointment:', singleAppointmentError);
+            }
+          }
 
-          // Email functionality temporarily disabled for stability
-          console.log('Appointment created successfully - calendar event ID:', eventId);
+          if (createdAppointments.length > 0) {
+            appointmentsCreated = true;
+            aiResponseFromAppointment = extractedData.response_message;
+          }
         }
       } catch (appointmentError) {
         console.error("Error processing appointment:", appointmentError);
@@ -106,17 +120,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const context = conversationMessages.slice(-5).map(msg => msg.content); // Last 5 messages for context
       
       let aiResponseContent;
-      if (appointmentCreated && appointmentDetails) {
-        aiResponseContent = `Perfect! I've successfully scheduled your appointment. Here are the details:
+      if (appointmentsCreated && createdAppointments.length > 0) {
+        // Use the AI-generated response message from OpenAI
+        if (aiResponseFromAppointment) {
+          aiResponseContent = aiResponseFromAppointment;
+        } else {
+          // Fallback response
+          if (createdAppointments.length === 1) {
+            const apt = createdAppointments[0];
+            aiResponseContent = `Perfect! I've successfully scheduled your appointment:
 
-**${appointmentDetails.summary}**
-📅 **Date & Time:** ${appointmentDetails.startTime.toLocaleString()}
-📍 **Location:** To be confirmed
+**${apt.summary}**
+📅 **Date & Time:** ${apt.startTime.toLocaleString()}
 ✅ **Status:** Scheduled
 
-Your appointment has been added to your Google Calendar. You should receive a confirmation email shortly.
+Your appointment has been added to your Google Calendar.`;
+          } else {
+            aiResponseContent = `Excellent! I've successfully scheduled ${createdAppointments.length} appointments:
 
-Is there anything else I can help you with?`;
+${createdAppointments.map((apt, index) => 
+  `**${index + 1}. ${apt.summary}**\n📅 ${apt.startTime.toLocaleString()}`
+).join('\n\n')}
+
+All appointments have been added to your Google Calendar.`;
+          }
+        }
       } else {
         aiResponseContent = await generateChatResponse(content, context);
       }
@@ -126,14 +154,14 @@ Is there anything else I can help you with?`;
         conversationId,
         content: aiResponseContent,
         role: 'assistant',
-        metadata: appointmentCreated ? { appointmentId: appointmentDetails?.id } : null
+        metadata: appointmentsCreated ? { appointmentIds: createdAppointments.map(apt => apt.id) } : null
       });
 
       res.json({
         userMessage,
         aiMessage,
-        appointmentCreated,
-        appointmentDetails
+        appointmentCreated: appointmentsCreated,
+        appointmentDetails: createdAppointments.length === 1 ? createdAppointments[0] : createdAppointments
       });
 
     } catch (error) {

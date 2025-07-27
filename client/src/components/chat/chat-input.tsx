@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 import { Send, Paperclip, Stethoscope, Activity, UserCheck, Heart } from "lucide-react";
 
 interface ChatInputProps {
@@ -31,8 +31,8 @@ export default function ChatInput({ onSendMessage, isLoading }: ChatInputProps) 
   };
 
   return (
-    <form onSubmit={handleSubmit} className="border-t border-gray-200 p-6">
-      <div className="flex items-center space-x-4">
+    <form onSubmit={handleSubmit} className="p-3">
+      <div className="flex items-center space-x-1">
         <div className="flex-1 relative">
           <Input
             type="text"
@@ -40,36 +40,33 @@ export default function ChatInput({ onSendMessage, isLoading }: ChatInputProps) 
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             className="w-full rounded-full px-6 py-3 pr-12 focus:ring-2 focus:ring-primary"
-            placeholder="Describe your appointment (e.g., 'Doctor appointment tomorrow at 3 PM')..."
+            placeholder="Describe your appointment..."
             disabled={isLoading}
           />
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-gray-600"
-          >
-            <Paperclip size={16} />
-          </Button>
         </div>
         <Button
           type="submit"
           disabled={!message.trim() || isLoading}
-          className="bg-primary hover:bg-blue-700 text-white rounded-full p-3 w-12 h-12"
+          className="bg-primary hover:bg-blue-700 text-white rounded-lg px-3 py-2"
+          size="sm"
         >
-          <Send size={16} />
+          {isLoading ? (
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <Send size={14} />
+          )}
         </Button>
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="mt-2 flex flex-wrap gap-2">
         <Button
           type="button"
           variant="secondary"
           size="sm"
           onClick={() => handleQuickAction("doctor")}
-          className="bg-gray-100 hover:bg-gray-200 text-gray-700"
+          className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs px- py-2"
         >
-          <Stethoscope size={14} className="mr-2" />
+          <Stethoscope size={12} className="mr-1" />
           Doctor Visit
         </Button>
         <Button
@@ -77,9 +74,9 @@ export default function ChatInput({ onSendMessage, isLoading }: ChatInputProps) 
           variant="secondary"
           size="sm"
           onClick={() => handleQuickAction("dentist")}
-          className="bg-gray-100 hover:bg-gray-200 text-gray-700"
+          className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs px-2 py-1"
         >
-          <Activity size={14} className="mr-2" />
+          <Activity size={12} className="mr-1" />
           Dentist
         </Button>
         <Button
@@ -87,9 +84,9 @@ export default function ChatInput({ onSendMessage, isLoading }: ChatInputProps) 
           variant="secondary"
           size="sm"
           onClick={() => handleQuickAction("specialist")}
-          className="bg-gray-100 hover:bg-gray-200 text-gray-700"
+          className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs px-2 py-1"
         >
-          <UserCheck size={14} className="mr-2" />
+          <UserCheck size={12} className="mr-1" />
           Specialist
         </Button>
         <Button
@@ -97,9 +94,9 @@ export default function ChatInput({ onSendMessage, isLoading }: ChatInputProps) 
           variant="secondary"
           size="sm"
           onClick={() => handleQuickAction("check-up")}
-          className="bg-gray-100 hover:bg-gray-200 text-gray-700"
+          className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs px-2 py-1"
         >
-          <Heart size={14} className="mr-2" />
+          <Heart size={12} className="mr-1" />
           Check-up
         </Button>
       </div>

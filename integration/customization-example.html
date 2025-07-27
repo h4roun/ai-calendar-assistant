@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot Customization Examples</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .example-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        .demo-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        .demo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .feature-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin: 5px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 AI Chatbot Customization Examples</h1>
+        <p>This page demonstrates different ways to customize the AI appointment chatbot for various use cases.</p>
+
+        <div class="examples-grid">
+            <!-- Medical Practice -->
+            <div class="example-card">
+                <h3>🏥 Medical Practice</h3>
+                <p>Professional blue theme for general medical practices</p>
+                <span class="feature-badge">Blue Theme</span>
+                <span class="feature-badge">Professional</span>
+                
+                <div class="code-block">
+window.initFloatingChatbot({
+    position: 'bottom-right',
+    primaryColor: '#2563eb',
+    serverUrl: 'https://your-domain.com'
+});
+                </div>
+                
+                <button class="demo-button" onclick="loadMedicalTheme()">Try Medical Theme</button>
+            </div>
+
+            <!-- Dental Practice -->
+            <div class="example-card">
+                <h3>🦷 Dental Practice</h3>
+                <p>Clean teal design perfect for dental offices</p>
+                <span class="feature-badge">Teal Theme</span>
+                <span class="feature-badge">Clean</span>
+                
+                <div class="code-block">
+window.initFloatingChatbot({
+    position: 'bottom-right',
+    primaryColor: '#14b8a6',
+    serverUrl: 'https://your-domain.com'
+});
+                </div>
+                
+                <button class="demo-button" onclick="loadDentalTheme()">Try Dental Theme</button>
+            </div>
+
+            <!-- Wellness Center -->
+            <div class="example-card">
+                <h3>🧘 Wellness Center</h3>
+                <p>Calming purple theme for wellness and therapy</p>
+                <span class="feature-badge">Purple Theme</span>
+                <span class="feature-badge">Calming</span>
+                
+                <div class="code-block">
+window.initFloatingChatbot({
+    position: 'bottom-right',
+    primaryColor: '#8b5cf6',
+    serverUrl: 'https://your-domain.com'
+});
+                </div>
+                
+                <button class="demo-button" onclick="loadWellnessTheme()">Try Wellness Theme</button>
+            </div>
+
+            <!-- Emergency Services -->
+            <div class="example-card">
+                <h3>🚑 Emergency Services</h3>
+                <p>Urgent red theme for emergency medical services</p>
+                <span class="feature-badge">Red Theme</span>
+                <span class="feature-badge">Urgent</span>
+                
+                <div class="code-block">
+window.initFloatingChatbot({
+    position: 'bottom-right',
+    primaryColor: '#dc2626',
+    serverUrl: 'https://your-domain.com'
+});
+                </div>
+                
+                <button class="demo-button" onclick="loadEmergencyTheme()">Try Emergency Theme</button>
+            </div>
+
+            <!-- Pediatric Practice -->
+            <div class="example-card">
+                <h3>👶 Pediatric Practice</h3>
+                <p>Friendly orange theme for children's healthcare</p>
+                <span class="feature-badge">Orange Theme</span>
+                <span class="feature-badge">Friendly</span>
+                
+                <div class="code-block">
+window.initFloatingChatbot({
+    position: 'bottom-right',
+    primaryColor: '#f59e0b',
+    serverUrl: 'https://your-domain.com'
+});
+                </div>
+                
+                <button class="demo-button" onclick="loadPediatricTheme()">Try Pediatric Theme</button>
+            </div>
+
+            <!-- Bottom Left Position -->
+            <div class="example-card">
+                <h3>⬅️ Left Position</h3>
+                <p>Chatbot positioned on the bottom-left corner</p>
+                <span class="feature-badge">Left Position</span>
+                <span class="feature-badge">Alternative</span>
+                
+                <div class="code-block">
+window.initFloatingChatbot({
+    position: 'bottom-left',
+    primaryColor: '#10b981',
+    serverUrl: 'https://your-domain.com'
+});
+                </div>
+                
+                <button class="demo-button" onclick="loadLeftPosition()">Try Left Position</button>
+            </div>
+        </div>
+
+        <div style="background: rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 25px; margin: 30px 0;">
+            <h2>🎛️ Advanced Customization</h2>
+            <p>For more advanced customization options:</p>
+            
+            <div class="code-block">
+window.initFloatingChatbot({
+    position: 'bottom-right',
+    primaryColor: '#f3202e',
+    serverUrl: 'https://your-domain.com',
+    
+    // Advanced options
+    width: '400px',
+    height: '600px',
+    borderRadius: '20px',
+    
+    // Custom messages
+    welcomeMessage: 'Hello! How can I help you today?',
+    placeholder: 'Type your message...',
+    
+    // Behavior options
+    autoOpen: false,           // Don't open automatically
+    openDelay: 3000,          // Wait 3 seconds before showing
+    
+    // Page restrictions
+    enabledPages: ['/contact', '/booking'],
+    disabledPages: ['/admin', '/login']
+});
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 40px 0;">
+            <h3>🚀 Ready to Get Started?</h3>
+            <p>Choose your favorite theme and copy the code to your website!</p>
+            <button class="demo-button" onclick="resetChatbot()">Reset to Default</button>
+        </div>
+    </div>
+
+    <!-- Chatbot Integration -->
+    <script src="http://localhost:5000/chatbot-embed.js"></script>
+    <script>
+        let currentChatbot = null;
+
+        function removeChatbot() {
+            if (currentChatbot) {
+                // Remove existing chatbot elements
+                const existingWidget = document.querySelector('.fixed.z-50');
+                if (existingWidget) {
+                    existingWidget.remove();
+                }
+                currentChatbot = null;
+            }
+        }
+
+        function loadChatbot(config) {
+            removeChatbot();
+            
+            setTimeout(() => {
+                if (typeof window.initFloatingChatbot === 'function') {
+                    currentChatbot = window.initFloatingChatbot(config);
+                    console.log('Loaded chatbot with config:', config);
+                }
+            }, 100);
+        }
+
+        // Theme functions
+        function loadMedicalTheme() {
+            loadChatbot({
+                position: 'bottom-right',
+                primaryColor: '#2563eb',
+                serverUrl: 'http://localhost:5000'
+            });
+        }
+
+        function loadDentalTheme() {
+            loadChatbot({
+                position: 'bottom-right',
+                primaryColor: '#14b8a6',
+                serverUrl: 'http://localhost:5000'
+            });
+        }
+
+        function loadWellnessTheme() {
+            loadChatbot({
+                position: 'bottom-right',
+                primaryColor: '#8b5cf6',
+                serverUrl: 'http://localhost:5000'
+            });
+        }
+
+        function loadEmergencyTheme() {
+            loadChatbot({
+                position: 'bottom-right',
+                primaryColor: '#dc2626',
+                serverUrl: 'http://localhost:5000'
+            });
+        }
+
+        function loadPediatricTheme() {
+            loadChatbot({
+                position: 'bottom-right',
+                primaryColor: '#f59e0b',
+                serverUrl: 'http://localhost:5000'
+            });
+        }
+
+        function loadLeftPosition() {
+            loadChatbot({
+                position: 'bottom-left',
+                primaryColor: '#10b981',
+                serverUrl: 'http://localhost:5000'
+            });
+        }
+
+        function resetChatbot() {
+            loadChatbot({
+                position: 'bottom-right',
+                primaryColor: '#f3202e',
+                serverUrl: 'http://localhost:5000'
+            });
+        }
+
+        // Load default theme on page load
+        window.addEventListener('load', function() {
+            setTimeout(resetChatbot, 1000);
+        });
+    </script>
+</body>
+</html>

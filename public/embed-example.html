@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot Embed Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; margin-bottom: 10px; }
+        h2 { color: #666; margin-bottom: 20px; }
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+        .code-block {
+            background: #f8f9fa;
+            padding: 15px;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Medical Practice Website</h1>
+        <h2>AI Appointment Assistant Integration Demo</h2>
+        
+        <p>This page demonstrates how the AI appointment chatbot appears on a real website.</p>
+        
+        <div class="highlight">
+            <strong>💡 Try it:</strong> Click the chat icon in the bottom-right corner to schedule an appointment!
+        </div>
+        
+        <h3>Features:</h3>
+        <ul>
+            <li>Schedule appointments in multiple languages (English, French, Spanish)</li>
+            <li>Book multiple appointments at once</li>
+            <li>Real Google Calendar integration</li>
+            <li>Floating widget that doesn't interfere with your website</li>
+        </ul>
+
+        <h3>How to add this to your website:</h3>
+        <p>Simply add this one line of code before the closing &lt;/body&gt; tag:</p>
+        
+        <div class="code-block">
+&lt;script src="http://localhost:5000/chatbot-embed.js"&gt;&lt;/script&gt;
+        </div>
+
+        <h3>Customization:</h3>
+        <p>You can customize the widget by modifying the configuration in the script:</p>
+        <div class="code-block">
+// Change colors, position, title, etc.
+const config = {
+    primaryColor: '#f3202e',  // Your brand color
+    position: 'bottom-right', // or 'bottom-left'
+    title: 'AI Assistant'     // Widget title
+};
+        </div>
+
+        <h3>Example Appointment Requests:</h3>
+        <ul>
+            <li>"I need a doctor appointment tomorrow at 10 AM"</li>
+            <li>"Book dentist July 18th 9am and doctor July 19th 2pm"</li>
+            <li>"J'ai besoin d'un rendez-vous chez le dentiste demain à 10h" (French)</li>
+        </ul>
+    </div>
+
+    <!-- AI Chatbot Widget - Add this to your website -->
+    <script src="/chatbot-embed.js"></script>
+</body>
+</html>

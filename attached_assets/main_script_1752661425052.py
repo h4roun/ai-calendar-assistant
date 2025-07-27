@@ -7,9 +7,9 @@ from googleapiclient.discovery import build
 
 # Azure OpenAI setup #
 client = AzureOpenAI(
-    api_key="7gphrwwIIaXbjVtGsTaYfcNWAl712KsmlvxmooOlfDI9F9odF5QzJQQJ99BGAC5T7U2XJ3w3AAABACOGJbfH",
+    api_key="your-api",
     api_version="2025-01-01-preview",
-    azure_endpoint="https://openai-instance-haroun.openai.azure.com/openai/deployments/gpt-haroun/chat/completions?api-version=2025-01-01-preview"
+    azure_endpoint="your-endpoint"
 )
 
 deployment_name = "gpt-haroun"  # Found in azure openai

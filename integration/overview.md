@@ -11,6 +11,7 @@ Preferred communication style: Simple, everyday language.
 ## System Architecture
 
 ### Frontend Architecture
+
 - **Framework**: React 18 with TypeScript
 - **Routing**: Wouter for client-side routing
 - **UI Components**: Radix UI primitives with shadcn/ui component library
@@ -19,6 +20,7 @@ Preferred communication style: Simple, everyday language.
 - **Build Tool**: Vite for development and production builds
 
 ### Backend Architecture
+
 - **Runtime**: Node.js with TypeScript
 - **Framework**: Express.js with middleware for JSON parsing and request logging
 - **Database ORM**: Drizzle ORM with PostgreSQL dialect
@@ -27,6 +29,7 @@ Preferred communication style: Simple, everyday language.
 - **External Services**: Google Calendar API for appointment scheduling
 
 ### Data Storage
+
 - **Primary Database**: PostgreSQL via Neon Database
 - **ORM**: Drizzle ORM for type-safe database operations
 - **Schema Management**: Drizzle Kit for migrations and schema updates
@@ -35,23 +38,27 @@ Preferred communication style: Simple, everyday language.
 ## Key Components
 
 ### Database Schema
+
 - **Users**: Basic user authentication and identification
 - **Conversations**: Chat sessions between users and AI assistant
 - **Messages**: Individual messages within conversations (user/assistant)
 - **Appointments**: Scheduled appointments with calendar integration
 
 ### AI Services
+
 - **OpenAI Service**: Handles natural language processing for appointment requests
 - **Calendar Service**: Manages Google Calendar integration (mock implementation)
 - **Appointment Processing**: Extracts structured data from user requests
 
 ### Chat Interface
+
 - **Real-time Chat**: Interactive conversation interface
 - **Message Types**: User and assistant messages with timestamps
 - **Appointment Cards**: Visual representation of scheduled appointments
 - **Typing Indicators**: Visual feedback during AI processing
 
 ### UI Component System
+
 - **Design System**: shadcn/ui with consistent styling
 - **Theme Support**: Light/dark mode with CSS custom properties
 - **Responsive Design**: Mobile-first approach with Tailwind CSS
@@ -71,6 +78,7 @@ Preferred communication style: Simple, everyday language.
 ## External Dependencies
 
 ### Production Dependencies
+
 - **@neondatabase/serverless**: Serverless PostgreSQL connection
 - **@tanstack/react-query**: Server state management
 - **drizzle-orm**: Type-safe ORM for database operations
@@ -81,12 +89,14 @@ Preferred communication style: Simple, everyday language.
 - **tailwindcss**: Utility-first CSS framework
 
 ### Development Dependencies
+
 - **vite**: Frontend build tool and dev server
 - **typescript**: Type safety and development experience
 - **drizzle-kit**: Database schema management
 - **tsx**: TypeScript execution for development
 
 ### External APIs
+
 - **Azure OpenAI**: Natural language processing and appointment extraction
 - **Google Calendar API**: Calendar event creation and management
 - **Neon Database**: Serverless PostgreSQL hosting
@@ -94,28 +104,35 @@ Preferred communication style: Simple, everyday language.
 ## Deployment Strategy
 
 ### Development Setup
+
 - **Frontend**: Vite dev server with HMR (Hot Module Replacement)
 - **Backend**: tsx for TypeScript execution with file watching
 - **Database**: Neon Database with environment-based connection
 - **Build Process**: Separate frontend (Vite) and backend (esbuild) builds
 
 ### Production Build
+
 - **Frontend**: Static files built to `dist/public` directory
 - **Backend**: Bundle with esbuild to `dist/index.js`
 - **Assets**: Static file serving for production
 - **Environment**: NODE_ENV-based configuration
 
 ### Environment Configuration
+
 - **DATABASE_URL**: PostgreSQL connection string
 - **AZURE_OPENAI_API_KEY**: API key for OpenAI service
 - **AZURE_OPENAI_ENDPOINT**: Azure OpenAI endpoint URL
 - **GOOGLE_CLIENT_ID/SECRET**: OAuth credentials for Calendar API
 
 ## Recent Updates (July 2025)
+
 - **Calendar Integration**: Successfully implemented real Google Calendar event creation using user's existing OAuth tokens
 - **Date Context**: Fixed AI to use correct current date (July 2025) instead of outdated June 2024
 - **Authentication**: Uses user's actual client_secret.json and token.json files for seamless calendar access
 - **Timezone**: All appointments scheduled in Europe/Paris timezone as requested
 - **Stability**: Removed complex OAuth flows in favor of direct token usage like original Python script
+- **Multiple Appointments**: Enhanced system to handle multiple appointments in single request (e.g., "doctor July 18th 9am and dentist July 19th 10am")
+- **Multilingual Support**: Added French, Spanish, and other language support for appointment scheduling and responses
+- **Windows Compatibility**: Added cross-env support and .bat file for Windows development environment
 
 The application follows a modern full-stack architecture with clear separation between frontend and backend concerns, type safety throughout the stack, and integration with external AI and calendar services for a complete appointment scheduling solution.

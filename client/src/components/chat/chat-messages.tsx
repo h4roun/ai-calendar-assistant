@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from "../ui/scroll-area";
 import MessageBubble from "./message-bubble";
 import TypingIndicator from "./typing-indicator";
 
@@ -31,7 +31,7 @@ export default function ChatMessages({ messages, isLoading, isTyping }: ChatMess
 
   if (isLoading) {
     return (
-      <div className="h-96 flex items-center justify-center">
+      <div className="h-full flex items-center justify-center p-4">
         <div className="text-gray-500">Loading messages...</div>
       </div>
     );
@@ -39,6 +39,7 @@ export default function ChatMessages({ messages, isLoading, isTyping }: ChatMess
 
   return (
     <ScrollArea className="h-96 p-6 chat-messages">
+
       <div className="space-y-4">
         {messages.length === 0 && (
           <div className="flex items-start space-x-3">

@@ -31,11 +31,11 @@ export default function ChatHeader({ onLogout }: ChatHeaderProps) {
         </Button>
         <Button
           onClick={onLogout}
-          className="hover:bg-blue-700 text-white bg-[#4a060b]"
+          className="hover:bg-blue-700 text-white bg-[#f28080]"
           size="sm"
         >
           <LogOut size={16} className="mr-2" />
-          Logout
+          Log-out
         </Button>
       </div>
     </header>

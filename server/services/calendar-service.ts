@@ -27,10 +27,10 @@ export class CalendarService {
   private setupCredentials() {
     // Use the tokens from your token.json file
     const tokens = {
-      access_token: "ya29.a0AS3H6NzFhkfXhXWrMdgfnE1ECoQXYYSSxCR22zwmCrZPgKjPU3CY-n4fko79Eu324EP3Qc_wj_8h8ndhuoHToNJlCqeMIMmkWyV_RiUqwIGEH0_hK_j3wneZHu-jpx7OTmjpJ-4neFnU-gd4Ct3lnM4viUDy59lYquhO3jWzaCgYKAfcSARYSFQHGX2Mi_lpN0nqX4kRhVChmg9ZwoA0175",
-      refresh_token: "1//034Y4rsgi4zhuCgYIARAAGAMSNwF-L9Irl91sLivSKmxLOPxXk6lmUOxh3dAKzbRHaoG2gqZt9eVW6CmUCvecwMxR7DbYQIli3Xs",
-      scope: "https://www.googleapis.com/auth/calendar",
-      token_type: "Bearer"
+      access_token: "your-token",
+      refresh_token: "your-token",
+      scope: "your-scope",
+      token_type: "your-type"
     };
     
     this.oauth2Client.setCredentials(tokens);
