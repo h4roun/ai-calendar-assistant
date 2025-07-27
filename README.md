@@ -3,7 +3,8 @@
 
 Here are a few screenshots of the working assistant:
 
-### 💬 Chatbot Interface
+### 💬 Chatbot Fullscreen Interface
 ![Chat UI](./integration/fullscreen_assistant.png)
+### 💬 Chatbot Bubble Interface
 ![Chat UI](./integration/bubble_assistant.png)
 
